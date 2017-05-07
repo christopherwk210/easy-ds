@@ -34,3 +34,11 @@
   flex: 1;
   border-radius: 0 0 4px 4px;
 }
+
+.settings {
+  flex: 1;
+  border-radius: 0 0 4px 4px;
+  background-color: #272822;
+  display: none;
+  padding: 8px;
+}

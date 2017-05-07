@@ -1,4 +1,23 @@
 /**
+ * Update the gml editor from JSON
+ */
+var updateGmlEditor = function() {
+  // Clear incrementers
+  currentSubObject = 0;
+  currentSubList = 0;
+
+  // Get values
+  var jsonValue = jsonEditor.getValue(),
+      convertedGml = convertJsonToDs(jsonValue);
+
+  // Set the GML editor to the parsed output
+  gmlEditor.setValue(convertedGml);
+
+  // Clear our initial selection
+  gmlEditor.clearSelection();
+}
+
+/**
  * Initialize the ACE editors and fill the GML editor with default values.
  * @param defaultObject {object} Default JSON to use
  */
@@ -28,21 +47,7 @@ var setUpEditors = function(defaultObject) {
   jsonEditor.$blockScrolling = Infinity;
 
   // Listen for JSON changes
-  jsonEditor.getSession().on('change', function(e) {
-    // Clear incrementers
-    currentSubObject = 0;
-    currentSubList = 0;
-
-    // Get values
-    var jsonValue = jsonEditor.getValue(),
-        convertedGml = convertJsonToDs(jsonValue);
-
-    // Set the GML editor to the parsed output
-    gmlEditor.setValue(convertedGml);
-
-    // Clear our initial selection
-    gmlEditor.clearSelection();
-  });
+  jsonEditor.getSession().on('change', updateGmlEditor);
 
   // Make it pretty
   jsonEditor.setTheme("ace/theme/monokai");
@@ -83,7 +88,7 @@ var parseArrayValue = function(array, dsName, property, curSubNumber) {
       // Handle objects
       var curSubMapNumber = currentSubObject++;
       outputString += `\n//Create a DS map for index ${i} of the ${property} array\n`
-                    + `${subDsMapName}${curSubMapNumber} = ds_map_create();\n`
+                    + `${useVar ? 'var ' : ''}${subDsMapName}${curSubMapNumber} = ds_map_create();\n`
                     + parseObjectToGml(currentVal, `${subDsMapName}${curSubMapNumber}`)
                     + `\n//Add sub map to the ${subDsListName}${curSubMapNumber} list\n`
                     + `${dsName}[| ${currentListIndex}] = ${subDsMapName}${curSubNumber};\n`
@@ -91,7 +96,7 @@ var parseArrayValue = function(array, dsName, property, curSubNumber) {
     } else if (Array.isArray(currentVal)) {
       var curSubListNumber = currentSubList++;
       outputString += `\n//Create a DS list for index ${i} of the ${property} array\n`
-                    + `${subDsListName}${curSubListNumber} = ds_list_create();\n`
+                    + `${useVar ? 'var ' : ''}${subDsListName}${curSubListNumber} = ds_list_create();\n`
                     + parseArrayValue(currentVal, `${subDsListName}${curSubListNumber}`, property, curSubListNumber)
                     + `\n//Add sub list to the ${subDsListName}${curSubListNumber} list\n`
                     + `${dsName}[| ${currentListIndex}] = ${subDsListName}${curSubListNumber};\n`
@@ -123,7 +128,7 @@ var parseObjectProperty = function(object, property, dsName) {
   else if (!Array.isArray(object[property])) {
     var curSubNumber = currentSubObject++;
     outputString += `\n//Create a DS map for the ${property} property\n`
-                  + `${subDsMapName}${curSubNumber} = ds_map_create();\n`
+                  + `${useVar ? 'var ' : ''}${subDsMapName}${curSubNumber} = ds_map_create();\n`
                   + parseObjectToGml(object[property], `${subDsMapName}${curSubNumber}`)
                   + `\n//Add sub map for the ${property} property to the ${dsName} map\n`
                   + `ds_map_add_map(${dsName}, "${property}", ${subDsMapName}${curSubNumber});\n\n`;
@@ -132,7 +137,7 @@ var parseObjectProperty = function(object, property, dsName) {
   else if (Array.isArray(object[property])) {
     var curSubNumber = currentSubList++;
     outputString += `\n//Create a DS list for the ${property} property\n`
-                 + `${subDsListName}${curSubNumber} = ds_list_create();\n`
+                 + `${useVar ? 'var ' : ''}${subDsListName}${curSubNumber} = ds_list_create();\n`
                  + parseArrayValue(object[property], `${subDsListName}${curSubNumber}`, property, curSubNumber)
                  + `\n//Add sub list for the ${property} property to the ${dsName} map\n`
                  + `ds_map_add_list(${dsName}, "${property}", ${subDsListName}${curSubNumber})\n`;
@@ -180,7 +185,7 @@ var convertJsonToDs = function(json) {
   // Set up a map to work with
   outputString = `/* Code generated automatically from JSON using
    https://christopherwk210.github.io/easy-ds/ */
-${rootDsMapName} = ds_map_create();\n`;
+${useVar ? 'var ' : ''}${rootDsMapName} = ds_map_create();\n`;
 
   // Parse
   outputString += parseObjectToGml(workingJson, rootDsMapName);
@@ -211,5 +216,33 @@ var defaultJSON = {
   }
 };
 
+// Set up settings
+var settingsElement = document.getElementById('settings'),
+    gmlEditorElement = document.getElementById('gml-editor'),
+    settingsViewElement = document.getElementById('settings-view'),
+    useVarElement = document.getElementById('use-var'),
+    settingsView = false,
+    useVar = true;
+
 // Init editors
 setUpEditors(defaultJSON);
+
+// Toggle settings view
+settingsElement.addEventListener('click', function() {
+  updateGmlEditor();
+
+  if (settingsView) {
+    gmlEditorElement.style.display = 'block';
+    settingsViewElement.style.display = 'none';
+  } else {
+    gmlEditorElement.style.display = 'none';
+    settingsViewElement.style.display = 'block';
+  }
+
+  settingsView = !settingsView;
+});
+
+// Handle using var
+useVarElement.addEventListener('click', function(e) {
+  useVar = e.srcElement.checked;
+});

@@ -21,9 +21,14 @@
 
     <div class="gml-editor-container">
       <div class="header-bar">
-        <h2>GML</h2>
+        <h2>GML <span class="pull-right dim"><a id="settings" href="#">settings</a></span></h2>
       </div>
       <div class="editor" id="gml-editor"></div>
+      <div class="settings" id="settings-view">
+        <label>
+          <input id="use-var" type="checkbox" checked> Include <code>var</code>
+        </label>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>

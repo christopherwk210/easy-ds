@@ -21,3 +21,12 @@ body {
 a {
   color: inherit;
 }
+
+label {
+  user-select: none;
+  cursor: pointer;
+}
+
+.ace-monokai .ace_storage.ace_type, .ace-monokai .ace_support.ace_class, .ace-monokai .ace_support.ace_type {
+  font-style: normal !important;
+}
