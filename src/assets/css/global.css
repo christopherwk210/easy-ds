@@ -8,3 +8,16 @@ body {
   background-color: #333335;
   color: #E1E1E1;
 }
+
+.pull-right {
+  float: right;
+}
+
+.dim {
+  color: #C1C1C1;
+  font-size: 0.5em;
+}
+
+a {
+  color: inherit;
+}
