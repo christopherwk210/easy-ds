@@ -1,5 +1,8 @@
 # Easy DS
-A simple tool to help with GML data structures.
+A simple tool to help with GML data structures. See it [here](https://christopherwk210.github.io/easy-ds/)!
+
+This project is written in plain old JavaScript, and lovingly uses the [ace editor](https://ace.c9.io/).
+
 
 # Quick Start
 `npm run build` - Build the entire project to the `dist/` directoy.
