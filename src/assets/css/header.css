@@ -1,0 +1,13 @@
+.header {
+  background-color: #3E3E3E;
+  margin: 0;
+  padding: 2em;
+  cursor: default;
+  user-select: none;
+  border-bottom: 2px solid rgb(109, 68, 137)
+}
+
+.header > h1 {
+  font-weight: lighter;
+  margin: 0;
+}

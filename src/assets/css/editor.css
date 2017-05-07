@@ -1,0 +1,33 @@
+.json-editor-container, .gml-editor-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: 32px;
+  top: 135px;
+}
+
+.json-editor-container {
+  left: 32px;
+  right: calc(50vw + 16px);
+}
+
+.gml-editor-container {
+  left: calc(50vw + 16px);
+  right: 32px;
+}
+
+.header-bar {
+  background-color: #3E3E3E;
+  border-radius: 4px 4px 0 0;
+  padding: 8px 0 8px 16px;
+}
+
+.header-bar > h2 {
+  font-weight: 100;
+  margin: 0;
+}
+
+.editor {
+  flex: 1;
+  border-radius: 0 0 4px 4px;
+}
