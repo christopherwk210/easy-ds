@@ -179,7 +179,7 @@ var convertJsonToDs = function(json) {
 
   // Set up a map to work with
   outputString = `/* Code generated automatically from JSON using
-   easy-ds */
+   https://christopherwk210.github.io/easy-ds/ */
 ${rootDsMapName} = ds_map_create();\n`;
 
   // Parse
